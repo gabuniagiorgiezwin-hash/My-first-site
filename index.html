@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameShop — Virtual Currency & Gift Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a12;
+      --surface:   #12121f;
+      --card:      #1a1a2e;
+      --border:    #2a2a45;
+      --neon:      #7c3aed;
+      --neon-glow: #a855f7;
+      --cyan:      #06b6d4;
+      --gold:      #f59e0b;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --white:     #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,18,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: var(--neon-glow); }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--neon);
+      color: var(--white);
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--neon-glow);
+      box-shadow: 0 0 20px rgba(168,85,247,0.5);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 7rem 2rem 5rem;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove {
+      0%   { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    .hero-eyebrow {
+      position: relative;
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--neon-glow);
+      border: 1px solid rgba(168,85,247,0.4);
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      position: relative;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--neon-glow); }
+
+    .hero p {
+      position: relative;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hero-actions {
+      position: relative;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--neon);
+      color: var(--white);
+      padding: 0.85rem 2rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: box-shadow 0.25s, transform 0.15s;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(124,58,237,0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 0.85rem 2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--neon-glow); color: var(--white); }
+
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--neon-glow);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+
+    .section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+    .section-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; }
+
+    .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--neon);
+      border-color: var(--neon);
+      color: var(--white);
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .game-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--neon-glow);
+      box-shadow: 0 8px 32px rgba(124,58,237,0.2);
+    }
+
+    .card-banner {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      position: relative;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 100px;
+    }
+    .badge-hot  { background: #dc2626; color: #fff; }
+    .badge-new  { background: #059669; color: #fff; }
+    .badge-sale { background: var(--gold); color: #000; }
+
+    .card-body  { padding: 1.1rem; flex: 1; display: flex; flex-direction: column; }
+    .card-game  { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.25rem; }
+    .card-title { font-weight: 700; font-size: 1rem; color: var(--white); margin-bottom: 0.5rem; }
+    .card-desc  { font-size: 0.82rem; color: var(--muted); flex: 1; margin-bottom: 1rem; }
+
+    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .card-commission { font-size: 0.78rem; color: var(--cyan); font-weight: 600; }
+    .card-btn {
+      background: var(--neon);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 0.45rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .card-btn:hover { background: var(--neon-glow); box-shadow: 0 0 12px rgba(168,85,247,0.4); }
+
+    .how-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .step { text-align: center; }
+    .step-icon  { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .step-title { font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .step-text  { font-size: 0.85rem; color: var(--muted); }
+
+    .deal-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .deal-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s;
+    }
+    .deal-row:hover { border-color: var(--neon-glow); }
+    .deal-emoji    { font-size: 2rem; flex-shrink: 0; }
+    .deal-info     { flex: 1; }
+    .deal-name     { font-weight: 700; color: var(--white); font-size: 0.95rem; }
+    .deal-platform { font-size: 0.75rem; color: var(--muted); }
+    .deal-commission { font-family: 'Orbitron', monospace; font-size: 0.95rem; color: var(--neon-glow); font-weight: 700; }
+
+    .faq-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .faq-q {
+      padding: 1.1rem 1.25rem;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      user-select: none;
+    }
+    .faq-q::after { content: '+'; color: var(--neon-glow); font-size: 1.25rem; flex-shrink: 0; }
+    .faq-item.open .faq-q::after { content: '−'; }
+    .faq-a {
+      display: none;
+      padding: 0 1.25rem 1.1rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .footer-logo { font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 900; color: var(--white); margin-bottom: 0.75rem; }
+    .footer-logo span { color: var(--neon-glow); }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { color: var(--muted); font-size: 0.8rem; }
+    .footer-disclaimer { max-width: 640px; margin: 1rem auto 0; font-size: 0.75rem; color: #3d4060; line-height: 1.6; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .stats-bar { gap: 2rem; }
+      .hero { padding: 5rem 1.25rem 3.5rem; }
+      .section { padding: 3rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Game<span>Shop</span>.gg</a>
+  <ul class="nav-links">
+    <li><a href="#games">Games</a></li>
+    <li><a href="#deals">Top Deals</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="#games" class="nav-cta">Browse All →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">✦ Official Affiliate Partner</div>
+  <h1>Buy <span class="accent">Robux,</span><br>Gems &amp; Coins<br>Instantly</h1>
+  <p>10+ games. One place. Official affiliate links — safe, fast, and always the same price as the original store.</p>
+  <div class="hero-actions">
+    <a href="#games" class="btn-primary">Browse All Offers</a>
+    <a href="#how" class="btn-secondary">How does it work?</a>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">12+</div><div class="stat-label">Games</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Official Links</div></div>
+  <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Always Available</div></div>
+  <div class="stat"><div class="stat-num">$0</div><div class="stat-label">Extra Fees</div></div>
+</div>
+
+<div id="games" class="section">
+  <div class="section-title">🎮 All Offers</div>
+  <div class="section-sub">Pick your game and buy directly from the official partner store</div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+    <button class="filter-btn" onclick="filterCards('roblox', this)">Roblox</button>
+    <button class="filter-btn" onclick="filterCards('minecraft', this)">Minecraft</button>
+    <button class="filter-btn" onclick="filterCards('mobile', this)">Mobile</button>
+    <button class="filter-btn" onclick="filterCards('pc', this)">PC</button>
+    <button class="filter-btn" onclick="filterCards('giftcard', this)">Gift Cards</button>
+  </div>
+
+  <div class="game-grid" id="gameGrid">
+
+    <a class="game-card" data-cat="roblox" href="https://www.roblox.com/upgrades/robux" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#1a0a3a,#2d1060);">🟥<span class="card-badge badge-hot">HOT</span></div>
+      <div class="card-body">
+        <div class="card-game">Roblox</div>
+        <div class="card-title">Robux — Virtual Currency</div>
+        <div class="card-desc">Official Roblox currency. Buy any amount and spend on games, avatars, and more.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~5%</span><a class="card-btn" href="https://www.roblox.com/upgrades/robux" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="roblox" href="https://www.roblox.com/premium/membership" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#1a0a3a,#3b1d8a);">👑<span class="card-badge badge-new">NEW</span></div>
+      <div class="card-body">
+        <div class="card-game">Roblox</div>
+        <div class="card-title">Roblox Premium Subscription</div>
+        <div class="card-desc">Monthly Robux allowance + exclusive trading and marketplace perks.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~8%</span><a class="card-btn" href="https://www.roblox.com/premium/membership" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="minecraft pc" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#0a1a0a,#1a4a1a);">⛏️<span class="card-badge badge-hot">HOT</span></div>
+      <div class="card-body">
+        <div class="card-game">Minecraft</div>
+        <div class="card-title">Minecraft Java + Bedrock PC</div>
+        <div class="card-desc">The full Minecraft experience — Java and Bedrock editions in one bundle.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~10%</span><a class="card-btn" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="minecraft" href="https://www.minecraft.net/en-us/marketplace" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#0a1a10,#0d5c2a);">💎</div>
+      <div class="card-body">
+        <div class="card-game">Minecraft</div>
+        <div class="card-title">Minecoins (Marketplace Currency)</div>
+        <div class="card-desc">Spend on skins, worlds, texture packs, and add-ons in the Marketplace.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~7%</span><a class="card-btn" href="https://www.minecraft.net/en-us/marketplace" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="mobile" href="https://brawlstars.com" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#1a0a2a,#4a1060);">⚡<span class="card-badge badge-hot">HOT</span></div>
+      <div class="card-body">
+        <div class="card-game">Brawl Stars</div>
+        <div class="card-title">Gems — Brawl Stars</div>
+        <div class="card-desc">Unlock Brawl Pass, Brawlers, skins, and exclusive offers with Gems.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~6%</span><a class="card-btn" href="https://brawlstars.com" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="mobile" href="https://clashofclans.com" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#1a1200,#4a3200);">💎</div>
+      <div class="card-body">
+        <div class="card-game">Clash of Clans</div>
+        <div class="card-title">Gems — Clash of Clans</div>
+        <div class="card-desc">Speed up buildings, train troops, and unlock heroes with Gems.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~6%</span><a class="card-btn" href="https://clashofclans.com" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="pc mobile" href="https://www.epicgames.com/fortnite/en-US/vbuckscard" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#000a1a,#003366);">🎮<span class="card-badge badge-sale">SALE</span></div>
+      <div class="card-body">
+        <div class="card-game">Fortnite</div>
+        <div class="card-title">V-Bucks — Fortnite</div>
+        <div class="card-desc">Battle Pass, skins, emotes, and more — all powered by V-Bucks.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~8%</span><a class="card-btn" href="https://www.epicgames.com/fortnite/en-US/vbuckscard" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="pc" href="https://www.leagueoflegends.com/en-us/riot-points/" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#001a1a,#003a3a);">⚔️</div>
+      <div class="card-body">
+        <div class="card-game">League of Legends</div>
+        <div class="card-title">Riot Points (RP)</div>
+        <div class="card-desc">Unlock champions, skins, chromas, and more across all Riot games.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~7%</span><a class="card-btn" href="https://www.leagueoflegends.com/en-us/riot-points/" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="pc giftcard" href="https://store.steampowered.com/digitalgiftcards/" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#0a0f1a,#1b2838);">🎁<span class="card-badge badge-new">NEW</span></div>
+      <div class="card-body">
+        <div class="card-game">Steam</div>
+        <div class="card-title">Steam Gift Card</div>
+        <div class="card-desc">Top up your Steam Wallet and spend on any game in the Steam store.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~5%</span><a class="card-btn" href="https://store.steampowered.com/digitalgiftcards/" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="giftcard" href="https://store.playstation.com" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#00001a,#000080);">🕹️</div>
+      <div class="card-body">
+        <div class="card-game">PlayStation</div>
+        <div class="card-title">PSN Gift Card / PS Plus</div>
+        <div class="card-desc">Add funds to your PSN wallet or subscribe to PS Plus for free monthly games.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~6%</span><a class="card-btn" href="https://store.playstation.com" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="pc giftcard" href="https://www.xbox.com/en-US/microsoft-store/gift-cards" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#001a00,#005c1a);">🎯</div>
+      <div class="card-body">
+        <div class="card-game">Xbox / Microsoft</div>
+        <div class="card-title">Xbox Gift Card + Game Pass</div>
+        <div class="card-desc">Xbox Wallet credit or Game Pass Ultimate — access to 100+ games.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~7%</span><a class="card-btn" href="https://www.xbox.com/en-US/microsoft-store/gift-cards" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+    <a class="game-card" data-cat="mobile" href="https://pubgmobile.com" target="_blank" rel="noopener noreferrer">
+      <div class="card-banner" style="background:linear-gradient(135deg,#1a0800,#4a1800);">🔫<span class="card-badge badge-sale">SALE</span></div>
+      <div class="card-body">
+        <div class="card-game">PUBG Mobile</div>
+        <div class="card-title">UC — Unknown Cash</div>
+        <div class="card-desc">Buy UC to get Royale Pass, outfits, crates, and room cards.</div>
+        <div class="card-footer"><span class="card-commission">↑ Commission: ~6%</span><a class="card-btn" href="https://pubgmobile.com" target="_blank">Buy Now →</a></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<div class="how-section">
+  <div class="section" id="deals">
+    <div class="section-title">🏆 Highest Commissions</div>
+    <div class="section-sub">These offers earn the most — great picks for buyers and us alike</div>
+    <div class="deal-list">
+      <a class="deal-row" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc" target="_blank">
+        <span class="deal-emoji">⛏️</span>
+        <div class="deal-info"><div class="deal-name">Minecraft Java + Bedrock</div><div class="deal-platform">PC · One-time purchase</div></div>
+        <span class="deal-commission">~10%</span>
+      </a>
+      <a class="deal-row" href="https://www.roblox.com/premium/membership" target="_blank">
+        <span class="deal-emoji">👑</span>
+        <div class="deal-info"><div class="deal-name">Roblox Premium</div><div class="deal-platform">Roblox · Monthly subscription</div></div>
+        <span class="deal-commission">~8%</span>
+      </a>
+      <a class="deal-row" href="https://www.epicgames.com/fortnite/en-US/vbuckscard" target="_blank">
+        <span class="deal-emoji">🎮</span>
+        <div class="deal-info"><div class="deal-name">Fortnite V-Bucks</div><div class="deal-platform">PC / Mobile</div></div>
+        <span class="deal-commission">~8%</span>
+      </a>
+      <a class="deal-row" href="https://www.xbox.com/en-US/microsoft-store/gift-cards" target="_blank">
+        <span class="deal-emoji">🎯</span>
+        <div class="deal-info"><div class="deal-name">Xbox Game Pass Ultimate</div><div class="deal-platform">Xbox / PC · Subscription</div></div>
+        <span class="deal-commission">~7%</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="how" class="section">
+  <div class="section-title">⚡ How It Works</div>
+  <div class="section-sub">3 simple steps</div>
+  <div class="steps">
+    <div class="step"><span class="step-icon">🖱️</span><div class="step-title">1. Pick an Offer</div><div class="step-text">Browse our catalogue and choose the game currency or gift card you want.</div></div>
+    <div class="step"><span class="step-icon">🔗</span><div class="step-title">2. Go to the Official Store</div><div class="step-text">Our link takes you directly to the official platform — Roblox, Steam, Epic, and more.</div></div>
+    <div class="step"><span class="step-icon">💳</span><div class="step-title">3. Buy Safely</div><div class="step-text">Payment happens on the official site. We earn a commission — you pay the same price.</div></div>
+    <div class="step"><span class="step-icon">✅</span><div class="step-title">Zero Extra Cost for You</div><div class="step-text">You always pay the official listed price. No markups, no hidden fees from us.</div></div>
+  </div>
+</div>
+
+<div class="how-section">
+  <div class="section" id="faq">
+    <div class="section-title">❓ Frequently Asked Questions</div>
+    <div class="section-sub">Got a question? The answer is probably here.</div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Is this site official?</div>
+        <div class="faq-a">We are an official affiliate/referral partner. Every link leads to a verified official platform (Roblox.com, Minecraft.net, Steam, etc.). We don't sell anything directly — we just connect you to the right store.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Do I pay more than the normal price?</div>
+        <div class="faq-a">No — you pay exactly the same price as if you went directly to the official store. We receive a commission from the partner platform, not from your wallet.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What does "affiliate" mean?</div>
+        <div class="faq-a">It means we have a partnership agreement with gaming companies. When you click our link and make a purchase, the company pays us a small percentage as a referral fee. Your money always goes directly to the official company.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">What if I have a problem with my purchase?</div>
+        <div class="faq-a">Since the purchase happens on the official platform, contact their official support team directly. We can also offer general guidance — reach us at info@gameshop.gg.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Will more games be added?</div>
+        <div class="faq-a">Yes, regularly! Subscribe to our list or send us a request and we'll add it as soon as possible.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Game<span>Shop</span>.gg</div>
+  <div class="footer-links">
+    <a href="#games">Offers</a>
+    <a href="#how">How It Works</a>
+    <a href="#faq">FAQ</a>
+    <a href="mailto:info@gameshop.gg">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 GameShop.gg — All rights reserved</div>
+  <div class="footer-disclaimer">
+    GameShop.gg is an affiliate/referral website. We are not officially affiliated with, endorsed by, or representing Roblox, Mojang, Supercell, Epic Games, Riot Games, Steam, Sony, Microsoft, or any other brand. All trademarks belong to their respective owners.
+  </div>
+</footer>
+
+<script>
+  function filterCards(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.game-card').forEach(card => {
+      const cats = card.dataset.cat || '';
+      card.style.display = (cat === 'all' || cats.includes(cat)) ? 'flex' : 'none';
+    });
+  }
+
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+</script>
+</body>
+</html>
